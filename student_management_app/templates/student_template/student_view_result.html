@@ -27,9 +27,12 @@
                                     <tr>
                                         <th>#ID</th>
                                         <th>Subject</th>
-                                        <th>Assignments Marks</th>
+                                        <th>First Test</th>
+                                        <th>Second Test</th>
                                         <th>Exam Marks</th>
+                                        <th>Total</th>
                                         <th>status</th>
+                                        <th>Print Result</th>
                                     </tr>
                                     </thead>
                                     
@@ -37,15 +40,20 @@
                                     <tr>
                                         <td>{{ row.id }}</td>
                                         <td>{{ row.subject_id.subject_name }}</td>
-                                        <td>{{ row.subject_assignment_marks }}</td>
+                                        <td>{{ row.subject_first_test }}</td>
+                                        <td>{{ row.subject_second_test }}</td>
                                         <td>{{ row.subject_exam_marks }}</td>
+                                        <td>{{ row.subject_total }}</td>
                                         <td>
-                                            {% if row.subject_exam_marks >= 40 %}
-                                                <span class="alert alert-success">Pass</span>
+                                            {% if row.subject_total >= 80 %}
+                                                <span class="alert alert-success">A-Excellent</span>
+                                            {% elif row.subject_total >= 70 and row.subject_total <= 79 %}
+                                                <span class="alert alert-danger">B-Very Good</span>
                                             {% else %}
-                                                <span class="alert alert-danger">Fail</span>
+                                                <span class="alert alert-danger">F-Fail</span>
                                             {% endif %}
                                         </td>
+                                        <td><a class="btn btn-primary text-white" href="{% url 'report' row.id %}">Print Result</a></td>
                                     </tr>
                                     {% endfor %}
                                 </table>

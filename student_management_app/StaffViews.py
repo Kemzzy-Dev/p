@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 import json
+from django.contrib import messages
 
 
 from student_management_app.models import CustomUser, Staffs, Courses, Subjects, Students, SessionYearModel, Attendance, AttendanceReport, LeaveReportStaff, FeedBackStaffs, StudentResult
@@ -328,9 +329,12 @@ def staff_add_result_save(request):
         return redirect('staff_add_result')
     else:
         student_admin_id = request.POST.get('student_list')
-        assignment_marks = request.POST.get('assignment_marks')
+        first_test = request.POST.get('firstTest')
+        second_test = request.POST.get('secondTest')
         exam_marks = request.POST.get('exam_marks')
         subject_id = request.POST.get('subject')
+        subject_total = float(first_test)+float(second_test)+float(exam_marks)
+
 
         student_obj = Students.objects.get(admin=student_admin_id)
         subject_obj = Subjects.objects.get(id=subject_id)
@@ -340,13 +344,15 @@ def staff_add_result_save(request):
             check_exist = StudentResult.objects.filter(subject_id=subject_obj, student_id=student_obj).exists()
             if check_exist:
                 result = StudentResult.objects.get(subject_id=subject_obj, student_id=student_obj)
-                result.subject_assignment_marks = assignment_marks
+                result.subject_first_test = first_test
+                result.subject_second_test = second_test
                 result.subject_exam_marks = exam_marks
+                result.subject_total = subject_total
                 result.save()
                 messages.success(request, "Result Updated Successfully!")
                 return redirect('staff_add_result')
             else:
-                result = StudentResult(student_id=student_obj, subject_id=subject_obj, subject_exam_marks=exam_marks, subject_assignment_marks=assignment_marks)
+                result = StudentResult(student_id=student_obj, subject_id=subject_obj, subject_exam_marks=exam_marks, subject_first_test=first_test, subject_second_test=second_test, subject_total=subject_total)
                 result.save()
                 messages.success(request, "Result Added Successfully!")
                 return redirect('staff_add_result')
